@@ -1,99 +1,167 @@
-# Deep Agents Learning Platform
+# AI Chat App
 
-A full-stack learning platform for mastering deep agents, event streaming, and real-time communication systems. Built with Fastify (backend) and Next.js + shadcn/ui (frontend).
+A multi-agent AI chat application with real-time reasoning/thinking display and tool execution, powered by LM Studio.
 
-## Architecture Overview
+## Features
+
+- **Streaming chat** via SSE from frontend through backend to LM Studio
+- **Reasoning/thinking tokens** streamed and displayed separately from final answer
+- **Agentic tool execution loop** — LLM decides to call tools, executes them, feeds results back, iterates up to 5 times
+- **Built-in tools**: web search, code review, summarization, data extraction
+- **Multi-agent architecture** with coordinator/worker delegation
+- **Agent skill registry** with dynamic tool building from registered skills
+- **Agent memory** and state management via Redis
+- **Event streaming** with Kafka (KRaft mode, no ZooKeeper)
+- **Vector embeddings** with pgvector for semantic search
+
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
 │           Frontend: Next.js + shadcn/ui         │
-│  - React Server Components (SSR)                │
-│  - SSE for real-time updates                    │
+│  - App Router with React Server Components      │
+│  - SSE streaming chat UI with reasoning display │
 │  - Zustand state management                     │
+│  - Agent topology visualization (@xyflow/react) │
 └───────────────────┬─────────────────────────────┘
-                    ↓ HTTP/WebSocket/SSE
+                    ↓ HTTP/SSE
 ┌───────────────────┴─────────────────────────────┐
 │        Backend: Fastify + Node.js               │
 │  - REST API endpoints                           │
+│  - SSE streaming to frontend                    │
+│  - Tool execution loop (LLM → tools → LLM)      │
 │  - Kafka for event streaming                    │
-│  - Redis for pub/sub state management           │
+│  - Redis for pub/sub & agent state              │
 └───────────────────┬─────────────────────────────┘
                     ↓
 ┌───────────────────┴─────────────────────────────┐
-│              Data Storage Layer                   │
+│              Data & AI Layer                     │
+│  - LM Studio (local LLM via OpenAI-compatible   │
+│    API with reasoning_content support)          │
 │  - PostgreSQL with pgvector                     │
-│  - Redis (state & pub/sub)                      │
+│  - Redis (state, pub/sub, agent memory)         │
+│  - Kafka (event streaming, KRaft mode)          │
 └───────────────────────────────────────────────────┘
 ```
 
 ## Prerequisites
 
-- Docker & Docker Compose (required)
-- Node.js 18+ (for local development without Docker)
+- Docker & Docker Compose
+- LM Studio running locally with an OpenAI-compatible API
 
-## Quick Start with Docker Compose
+## Quick Start
 
-### 1. Clone and Navigate to Project Directory
-
-```bash
-cd deep-agents-learning
-```
-
-### 2. Start All Services
+### 1. Clone and start all services
 
 ```bash
+git clone https://github.com/gameonvinay/aichatapp.git
+cd aichatapp
 docker-compose up -d
 ```
 
-This will start:
-- **Frontend** (Next.js) on http://localhost:3000
-- **Backend** (Fastify) on http://localhost:8080  
-- **Redis** on localhost:6379
-- **PostgreSQL + pgvector** on localhost:5432
-- **Kafka** on localhost:9092/9093
-- **ZooKeeper** on localhost:2181
+### 2. Configure LM Studio
 
-### 3. View Logs (Optional)
+Set your LM Studio endpoint in `backend-fastify/.env`:
 
-```bash
-docker-compose logs -f frontend-nextjs backend-fastify
+```env
+LM_STUDIO_URL=http://host.docker.internal:1234
 ```
 
-## Available Endpoints
+Replace `http://host.docker.internal:1234` with your actual LM Studio URL.
 
-### Backend API (http://localhost:8080)
+### 3. Access the app
+
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8080
+
+## How It Works
+
+### Chat Flow
+
+1. User sends a message on the frontend
+2. Request proxies through Next.js API route (`/api/chat/stream`)
+3. Backend receives the message and builds tool definitions from registered agent skills
+4. Backend streams to LM Studio via SSE
+5. Response chunks (reasoning + content) stream back to the UI in real-time
+
+### Tool Execution Loop
+
+1. LLM receives the user message with available tool definitions
+2. If the LLM decides to use a tool, it returns a `tool_calls` array
+3. Backend executes the requested skill (web-search, code-review, summarization, data-extraction, or custom registered skills)
+4. Tool results are fed back to the LLM as `tool` messages
+5. Loop repeats (max 5 iterations) until the LLM produces a final answer
+6. Final answer is streamed back with any reasoning tokens shown first
+
+### Reasoning/Thinking Display
+
+The streaming parser separates `reasoning_content` (or `reasoning`) tokens from regular `content` tokens. The UI displays the model's thinking process before showing the final answer.
+
+## Services & Ports
+
+| Service         | Port   | Description                          |
+|-----------------|--------|--------------------------------------|
+| Frontend        | 3000   | Next.js app with shadcn/ui           |
+| Backend         | 8080   | Fastify API server                   |
+| Redis           | 6379   | Agent state, pub/sub, memory         |
+| PostgreSQL      | 5432   | Persistent storage + pgvector        |
+| Kafka           | 9092   | Event streaming (KRaft mode)         |
+
+## API Endpoints
+
+### Health & Models
 
 ```bash
 # Health check
 curl http://localhost:8080/health
 
+# Get available models from LM Studio
+curl http://localhost:8080/api/chat/models
+```
+
+### Chat
+
+```bash
+# Streaming chat (SSE)
+curl -X POST http://localhost:8080/api/chat/stream \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "user", "content": "Search for the latest news about AI"}
+    ]
+  }'
+```
+
+Stream events:
+- `{"type":"start"}` — connection opened
+- `{"type":"reasoning_chunk","content":"..."}` — thinking token
+- `{"type":"reasoning","content":"..."}` — complete reasoning block
+- `{"type":"content","content":"..."}` — answer token
+- `{"type":"tool_calls","calls":[...]}` — tool execution results
+- `{"type":"done"}` — stream complete
+- `{"type":"error","error":"..."}` — error
+
+### Agents
+
+```bash
 # Get all agents
 curl http://localhost:8080/api/agents
 
-# Register a new agent (example)
+# Register a new agent
 curl -X POST http://localhost:8080/api/agents \
   -H "Content-Type: application/json" \
-  -d '{
-    "id": "agent-1",
-    "name": "Data Processing Agent",
-    "type": "data-processing",
-    "state": { "status": "online" },
-    "skills": [
-      {"name": "data-analysis", "category": "reasoning"},
-      {"name": "transformations", "category": "action"}
-    ]
-  }'
+  -d '{"id":"agent-1","name":"Research Agent","type":"research"}'
 
-# Get specific agent by ID
+# Get agent by ID
 curl http://localhost:8080/api/agents/agent-1
-
-# SSE streaming for an agent (keep connection open)
-curl http://localhost:8080/api/agents/agent-1/stream
 
 # Update agent state
 curl -X PUT http://localhost:8080/api/agents/agent-1 \
   -H "Content-Type: application/json" \
-  -d '{"status": "busy"}'
+  -d '{"status":"busy"}'
+
+# SSE stream for agent updates
+curl http://localhost:8080/api/agents/agent-1/stream
 
 # Get agent skills
 curl http://localhost:8080/api/agents/agent-1/skills
@@ -101,84 +169,127 @@ curl http://localhost:8080/api/agents/agent-1/skills
 # Add skill to agent
 curl -X POST http://localhost:8080/api/agents/agent-1/skills \
   -H "Content-Type: application/json" \
-  -d '{"name": "machine-learning", "category": "reasoning"}'
+  -d '{"name":"web-search","category":"action"}'
 
 # Assign task to agent
 curl -X POST http://localhost:8080/api/agents/agent-1/tasks \
   -H "Content-Type: application/json" \
-  -d '{"id": "task-1", "description": "Process dataset X"}'
+  -d '{"id":"task-1","description":"Research topic X"}'
 
 # Mark task complete
 curl -X POST http://localhost:8080/api/agents/agent-1/tasks/task-1/completed
-
-# Create Kafka topic
-curl -X POST http://localhost:8080/api/kafka/topics/my-topic
-
-# Publish event to Kafka topic
-curl -X POST http://localhost:8080/api/kafka/topics/my-topic/events \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Hello, World!", "timestamp": "2026-03-27T12:00:00Z"}'
 ```
 
-### Frontend (http://localhost:3000)
+### Skills
 
-Visit http://localhost:3000 to see the agent dashboard. The dashboard displays all registered agents and updates in real-time via SSE.
+```bash
+# Register a skill
+curl -X POST http://localhost:8080/api/skills \
+  -H "Content-Type: application/json" \
+  -d '{"id":"web-search","name":"Web Search","category":"action"}'
+
+# Get all skills
+curl http://localhost:8080/api/skills
+
+# Get skill by ID
+curl http://localhost:8080/api/skills/web-search
+```
+
+### Agent Delegation
+
+```bash
+# Delegate a task from one agent to another
+curl -X POST http://localhost:8080/api/agents/agent-1/delegations \
+  -H "Content-Type: application/json" \
+  -d '{"targetAgentId":"agent-2","task":"Analyze this data"}'
+
+# Execute a delegated task
+curl -X POST http://localhost:8080/api/delegations/:delegationId/execute
+
+# Get delegation history
+curl http://localhost:8080/api/delegations/history
+```
+
+### Coordinator Agents
+
+```bash
+# Create a coordinator agent
+curl -X POST http://localhost:8080/api/agents/agent-1/coordinator \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Main Coordinator"}'
+
+# Add a worker to a coordinator
+curl -X POST http://localhost:8080/api/agents/coordinator-1/workers/worker-1
+
+# Distribute a task across workers
+curl -X POST http://localhost:8080/api/coordinators/coordinator-1/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"description":"Process this dataset"}'
+```
+
+### Kafka Events
+
+```bash
+# Create a topic
+curl -X POST http://localhost:8080/api/kafka/topics/my-topic
+
+# Publish an event
+curl -X POST http://localhost:8080/api/kafka/topics/my-topic/events \
+  -H "Content-Type: application/json" \
+  -d '{"message":"Hello","timestamp":"2026-04-01T00:00:00Z"}'
+```
 
 ## Project Structure
 
 ```
-deep-agents-learning/
-├── docker-compose.yml          # Service orchestration
-├── README.md                   # This file
-
-# Backend (Fastify)
-backend-fastify/
-├── Dockerfile                  # Backend container image
-├── package.json                # Backend dependencies
-└── src/                        # Backend source code
-    ├── index.js               # Fastify server entry point
-    ├── routes/                # API route handlers
-    │   └── agents.js          # Agent management endpoints
-    └── services/              # Service implementations
-        ├── redis.js           # Redis pub/sub state management
-        └── kafka.js           # Kafka event streaming
-
-# Frontend (Next.js)
-frontend-nextjs/
-├── Dockerfile                  # Frontend container image
-├── next.config.js             # Next.js configuration
-├── tailwind.config.js         # Tailwind CSS configuration
-├── globals.css                # Global styles
-├── package.json               # Frontend dependencies
-└── pages/                     # Next.js pages
-    └── index.js              # Main dashboard page
-
-# Shared components (used by both frontend and backend)
-components/                     
-├── AgentList.js              # List of all agents
-└── AgentCard.js              # Individual agent display
-
-# Learning resources (optional)
-backend.md                      # Backend learning materials
-frontend.md                     # Frontend learning materials
+aichatapp/
+├── docker-compose.yml              # Service orchestration
+├── README.md                       # This file
+│
+├── backend-fastify/
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── .env.example
+│   └── src/
+│       ├── index.js                # Fastify server entry point
+│       ├── routes/
+│       │   ├── agents.js           # Agent CRUD, tasks, skills
+│       │   └── chat.js             # Streaming chat endpoint
+│       ├── services/
+│       │   ├── llm.js              # LM Studio integration + tool loop + reasoning stream
+│       │   ├── tool-executor.js    # Tool definitions & skill execution
+│       │   ├── redis.js            # Redis client & agent state
+│       │   ├── kafka.js            # Kafka producer/consumer
+│       │   ├── coordinator-agent.js # Coordinator/worker management
+│       │   ├── agent-delegation.js  # Task delegation between agents
+│       │   ├── agent-memory.js      # Agent conversation memory
+│       │   ├── skill-registry.js    # Dynamic skill registration
+│       │   ├── embedding-pipeline.js # pgvector embedding pipeline
+│       │   ├── pgvector-integration.js
+│       │   ├── event-detection.js
+│       │   ├── realtime-analytics.js
+│       │   ├── worker-task.js
+│       │   └── kafka-consumer-groups.js
+│       └── tools/
+│           ├── web-search.js       # Web search tool
+│           ├── code-review.js      # Code review tool
+│           ├── summarization.js    # Text summarization tool
+│           └── data-extraction.js  # Data extraction tool
+│
+├── frontend-nextjs/
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── next.config.js
+│   ├── tailwind.config.js
+│   └── app/
+│       ├── layout.tsx
+│       ├── page.tsx
+│       ├── chat/page.tsx           # Chat UI
+│       └── api/chat/stream/route.ts # SSE proxy to backend
+│
+├── backend.md                      # Backend documentation
+└── frontend.md                     # Frontend documentation
 ```
-
-## Learning Path (Condensed - Highest Value Topics First)
-
-### Phase 1: Core Foundation (~30 hours)
-- React Server Components & SSE streaming
-- Fastify server setup with REST API
-- Redis for state management and pub/sub
-
-### Phase 2: Event Streaming (~35 hours)
-- Kafka basics (topics, producers, consumers)
-- WebSocket coordination for real-time updates
-
-### Phase 3: Vector Storage (~40 hours)
-- pgvector for embedding similarity search
-
-### Phase 4: Full System Integration (~30 hours)
-- Complete multi-agent system with all components
 
 ## Troubleshooting
 
@@ -198,11 +309,18 @@ curl http://localhost:8080/health
 # Should return {"status":"ok"}
 ```
 
+### LM Studio not responding
+
+Verify your LM Studio endpoint is correct and the server is running:
+```bash
+curl http://localhost:8080/api/chat/models
+```
+
 ### Kafka connection errors
 
-Kafka requires ZooKeeper to be running:
+Check Kafka is healthy:
 ```bash
-docker-compose logs zookeeper
+docker-compose logs kafka
 ```
 
 ### View all service status
@@ -211,14 +329,6 @@ docker-compose logs zookeeper
 docker-compose ps
 ```
 
-## Development Mode (without Docker)
-
-For local development without Docker, you can run services directly:
-
-1. Install dependencies in each service folder
-2. Run local Redis, PostgreSQL, and Kafka instances
-3. Update environment variables in `.env` files
-
 ## License
 
-MIT - Feel free to use for learning purposes.
+MIT
