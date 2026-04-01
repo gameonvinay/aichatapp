@@ -36,7 +36,7 @@ A full-stack learning platform for mastering deep agents, event streaming, and r
 ### 1. Clone and Navigate to Project Directory
 
 ```bash
-cd /Users/vinaysaini/Projects/lmstudio
+cd deep-agents-learning
 ```
 
 ### 2. Start All Services
