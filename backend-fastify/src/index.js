@@ -14,12 +14,15 @@ const kafkaService = require("./services/kafka");
 const skillRegistry = require("./services/skill-registry");
 const agentDelegationService = require("./services/agent-delegation");
 const coordinatorAgentService = require("./services/coordinator-agent");
+const db = require("./services/db");
 
 // Import routes
 const agentRoutes = require("./routes/agents");
 const chatRoutes = require("./routes/chat");
+const conversationRoutes = require("./routes/conversations");
 fastify.register(agentRoutes, { prefix: "/api/agents" });
 fastify.register(chatRoutes, { prefix: "/api/chat" });
+fastify.register(conversationRoutes, { prefix: "/api/conversations" });
 
 // Health check endpoint
 fastify.get("/health", async (request, reply) => {
@@ -237,6 +240,11 @@ const start = async () => {
     // Initialize Redis clients
     await redisService.initializeClients();
     console.log("Redis clients initialized");
+
+    // Initialize PostgreSQL pool
+    const pool = db.getPool();
+    await pool.query('SELECT 1');
+    console.log("PostgreSQL connected");
 
     // Initialize Kafka (non-blocking, continues even if Kafka is unavailable)
     kafkaService.initializeKafka().catch((err) => {
