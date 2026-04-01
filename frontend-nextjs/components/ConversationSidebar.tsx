@@ -34,8 +34,8 @@ export default function ConversationSidebar({
   return (
     <div style={{
       width: "260px",
-      backgroundColor: "#1e1e2e",
-      borderRight: "1px solid #2a2a3e",
+      backgroundColor: "hsl(var(--background-card))",
+      borderRight: "1px solid hsl(var(--border))",
       display: "flex",
       flexDirection: "column",
       height: "100vh",
@@ -51,7 +51,7 @@ export default function ConversationSidebar({
             gap: "8px",
             width: "100%",
             padding: "10px 14px",
-            background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+            background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%)",
             border: "none",
             borderRadius: "10px",
             fontSize: "14px",
@@ -69,13 +69,13 @@ export default function ConversationSidebar({
       <div style={{ flex: 1, overflowY: "auto", padding: "0 8px 16px" }}>
         {isLoading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: "24px" }}>
-            <Loader2 size={20} className="animate-spin" color="#6366f1" />
+            <Loader2 size={20} className="animate-spin" color="hsl(var(--primary))" />
           </div>
         ) : conversations.length === 0 ? (
           <div style={{
             textAlign: "center",
             padding: "24px 16px",
-            color: "#6b7280",
+            color: "hsl(var(--foreground-secondary))",
             fontSize: "13px",
           }}>
             <MessageSquare size={24} style={{ marginBottom: "8px", opacity: 0.5 }} />
@@ -94,14 +94,14 @@ export default function ConversationSidebar({
                   padding: "10px 12px",
                   borderRadius: "8px",
                   cursor: "pointer",
-                  background: conv.id === activeConversationId ? "#2a2a3e" : "transparent",
+                  background: conv.id === activeConversationId ? "hsl(var(--background-active))" : "transparent",
                   transition: "background 0.15s",
                   fontSize: "13px",
-                  color: conv.id === activeConversationId ? "#fff" : "#a1a1aa",
+                  color: conv.id === activeConversationId ? "hsl(var(--foreground))" : "hsl(var(--foreground-secondary))",
                 }}
                 onMouseEnter={(e) => {
                   if (conv.id !== activeConversationId) {
-                    e.currentTarget.style.background = "#2a2a3e"
+                    e.currentTarget.style.background = "hsl(var(--background-hover))"
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -137,7 +137,7 @@ export default function ConversationSidebar({
                     e.currentTarget.style.opacity = conv.id === activeConversationId ? "0.7" : "0"
                   }}
                 >
-                  <Trash2 size={12} color="#ef4444" />
+                  <Trash2 size={12} color="hsl(var(--error))" />
                 </button>
               </div>
             ))}

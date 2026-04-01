@@ -8,24 +8,24 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
 
 const statusConfig: Record<string, { dot: string; bg: string; text: string; border: string; label: string }> = {
   online: {
-    dot: "#10b981",
-    bg: "#ecfdf5",
-    text: "#059669",
-    border: "#a7f3d0",
+    dot: "hsl(var(--status-online))",
+    bg: "hsl(var(--success-bg))",
+    text: "hsl(var(--success-fg))",
+    border: "hsl(var(--success))",
     label: "Online",
   },
   offline: {
-    dot: "#9ca3af",
-    bg: "#f3f4f6",
-    text: "#4b5563",
-    border: "#d1d5db",
+    dot: "hsl(var(--foreground-muted))",
+    bg: "hsl(var(--background-muted))",
+    text: "hsl(var(--foreground-secondary))",
+    border: "hsl(var(--border))",
     label: "Offline",
   },
   busy: {
-    dot: "#f59e0b",
-    bg: "#fffbeb",
-    text: "#d97706",
-    border: "#fde68a",
+    dot: "hsl(var(--status-busy))",
+    bg: "hsl(var(--warning-bg))",
+    text: "hsl(var(--warning-fg))",
+    border: "hsl(var(--warning))",
     label: "Busy",
   },
 }
@@ -90,10 +90,10 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
     <div
       onClick={() => onSelect(agent.id)}
       style={{
-        backgroundColor: "#ffffff",
+        backgroundColor: "hsl(var(--background-card))",
         borderRadius: "12px",
-        border: isSelected ? "1px solid #6366f1" : "1px solid #e2e8f0",
-        boxShadow: isSelected ? "0 0 0 3px rgba(99,102,241,0.1)" : "0 1px 2px rgba(0,0,0,0.04)",
+        border: isSelected ? "1px solid hsl(var(--primary))" : "1px solid hsl(var(--border))",
+        boxShadow: isSelected ? "0 0 0 3px hsl(var(--primary-muted))" : "0 1px 2px rgba(0,0,0,0.04)",
         cursor: "pointer",
         transition: "all 0.15s ease",
         overflow: "hidden",
@@ -119,11 +119,11 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
               }} />
             </div>
             <div>
-              <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#0f172a", margin: 0 }}>
+              <h3 style={{ fontSize: "14px", fontWeight: 600, color: "hsl(var(--foreground))", margin: 0 }}>
                 {agent.name || agent.id}
               </h3>
               {agent.type && (
-                <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 0", textTransform: "capitalize" }}>
+                <p style={{ fontSize: "12px", color: "hsl(var(--foreground-secondary))", margin: "2px 0 0", textTransform: "capitalize" }}>
                   {agent.type}
                 </p>
               )}
@@ -143,7 +143,7 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
               }}
               title="Edit agent"
             >
-              <Pencil size={14} color="#64748b" />
+              <Pencil size={14} color="hsl(var(--foreground-secondary))" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onDelete() }}
@@ -158,7 +158,7 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
               }}
               title="Delete agent"
             >
-              <Trash2 size={14} color="#ef4444" />
+              <Trash2 size={14} color="hsl(var(--error))" />
             </button>
             <span style={{
               display: "inline-flex",
@@ -177,7 +177,7 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
         </div>
       </div>
 
-      <div style={{ borderTop: "1px solid #f1f5f9" }}>
+      <div style={{ borderTop: "1px solid hsl(var(--border-light))" }}>
         <button
           onClick={(e) => { e.stopPropagation(); setShowSkills(!showSkills) }}
           style={{
@@ -192,12 +192,12 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Zap size={15} color="#94a3b8" />
-            <span style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Skills</span>
+            <Zap size={15} color="hsl(var(--foreground-muted))" />
+            <span style={{ fontSize: "13px", fontWeight: 500, color: "hsl(var(--foreground-muted))" }}>Skills</span>
             {skills.length > 0 && (
               <span style={{
-                backgroundColor: "#f1f5f9",
-                color: "#475569",
+                backgroundColor: "hsl(var(--background-muted))",
+                color: "hsl(var(--foreground-secondary))",
                 fontSize: "11px",
                 fontWeight: 500,
                 padding: "1px 7px",
@@ -207,7 +207,7 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
               </span>
             )}
           </div>
-          {showSkills ? <ChevronUp size={15} color="#94a3b8" /> : <ChevronDown size={15} color="#94a3b8" />}
+          {showSkills ? <ChevronUp size={15} color="hsl(var(--foreground-muted))" /> : <ChevronDown size={15} color="hsl(var(--foreground-muted))" />}
         </button>
         {showSkills && (
           <div style={{ padding: "0 20px 16px" }}>
@@ -221,21 +221,21 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
                     borderRadius: "6px",
                     fontSize: "12px",
                     fontWeight: 500,
-                    backgroundColor: "#eef2ff",
-                    color: "#4338ca",
+                    backgroundColor: "hsl(var(--primary-muted))",
+                    color: "hsl(var(--primary))",
                   }}>
                     {skill.name || skill.description}
                   </span>
                 ))}
               </div>
             ) : (
-              <p style={{ fontSize: "12px", color: "#94a3b8", margin: 0 }}>No skills registered</p>
+              <p style={{ fontSize: "12px", color: "hsl(var(--foreground-muted))", margin: 0 }}>No skills registered</p>
             )}
           </div>
         )}
       </div>
 
-      <div style={{ borderTop: "1px solid #f1f5f9" }}>
+      <div style={{ borderTop: "1px solid hsl(var(--border-light))" }}>
         <button
           onClick={(e) => { e.stopPropagation(); setShowTasks(!showTasks) }}
           style={{
@@ -250,12 +250,12 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <ClipboardList size={15} color="#94a3b8" />
-            <span style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Tasks</span>
+            <ClipboardList size={15} color="hsl(var(--foreground-muted))" />
+            <span style={{ fontSize: "13px", fontWeight: 500, color: "hsl(var(--foreground-muted))" }}>Tasks</span>
             {activeTasks.length > 0 && (
               <span style={{
-                backgroundColor: "#f1f5f9",
-                color: "#475569",
+                backgroundColor: "hsl(var(--background-muted))",
+                color: "hsl(var(--foreground-secondary))",
                 fontSize: "11px",
                 fontWeight: 500,
                 padding: "1px 7px",
@@ -265,7 +265,7 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
               </span>
             )}
           </div>
-          {showTasks ? <ChevronUp size={15} color="#94a3b8" /> : <ChevronDown size={15} color="#94a3b8" />}
+          {showTasks ? <ChevronUp size={15} color="hsl(var(--foreground-muted))" /> : <ChevronDown size={15} color="hsl(var(--foreground-muted))" />}
         </button>
         {showTasks && (
           <div style={{ padding: "0 20px 16px" }}>
@@ -278,12 +278,12 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
                     justifyContent: "space-between",
                     padding: "8px 12px",
                     borderRadius: "8px",
-                    backgroundColor: "#eff6ff",
+                    backgroundColor: "hsl(var(--info-bg))",
                   }}>
-                    <span style={{ fontSize: "12px", color: "#1e40af", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: "12px", color: "hsl(var(--info-fg))", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {task.description || task.title}
                     </span>
-                    <span style={{ fontSize: "11px", fontWeight: 500, color: "#3b82f6", marginLeft: "8px", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 500, color: "hsl(var(--info))", marginLeft: "8px", whiteSpace: "nowrap" }}>
                       Active
                     </span>
                   </div>
@@ -295,20 +295,20 @@ export default function AgentCard({ agent, isSelected, onSelect, onEdit, onDelet
                     justifyContent: "space-between",
                     padding: "8px 12px",
                     borderRadius: "8px",
-                    backgroundColor: "#f8fafc",
+                    backgroundColor: "hsl(var(--background-page))",
                     opacity: 0.6,
                   }}>
-                    <span style={{ fontSize: "12px", color: "#64748b", textDecoration: "line-through", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: "12px", color: "hsl(var(--foreground-secondary))", textDecoration: "line-through", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {task.description || task.title}
                     </span>
-                    <span style={{ fontSize: "11px", fontWeight: 500, color: "#94a3b8", marginLeft: "8px", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 500, color: "hsl(var(--foreground-muted))", marginLeft: "8px", whiteSpace: "nowrap" }}>
                       Done
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p style={{ fontSize: "12px", color: "#94a3b8", margin: 0 }}>No tasks assigned</p>
+              <p style={{ fontSize: "12px", color: "hsl(var(--foreground-muted))", margin: 0 }}>No tasks assigned</p>
             )}
           </div>
         )}

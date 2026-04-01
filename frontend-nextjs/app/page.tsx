@@ -203,11 +203,11 @@ export default function Home() {
   }, [fetchAgents])
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "hsl(var(--background-page))" }}>
       {/* Header */}
       <header style={{
-        backgroundColor: "#ffffff",
-        borderBottom: "1px solid #e2e8f0",
+        backgroundColor: "hsl(var(--background-card))",
+        borderBottom: "1px solid hsl(var(--border))",
         padding: "0 24px",
       }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
@@ -222,7 +222,7 @@ export default function Home() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "10px",
-                background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -230,10 +230,10 @@ export default function Home() {
                 <Bot size={20} color="#fff" />
               </div>
               <div>
-                <h1 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a", margin: 0 }}>
+                <h1 style={{ fontSize: "16px", fontWeight: 600, color: "hsl(var(--foreground))", margin: 0 }}>
                   Deep Agents Dashboard
                 </h1>
-                <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "12px", color: "hsl(var(--foreground-secondary))", margin: "2px 0 0" }}>
                   {agents.length} agent{agents.length !== 1 ? "s" : ""} registered
                 </p>
               </div>
@@ -242,8 +242,8 @@ export default function Home() {
               <Link href="/chat">
                 <Button
                   style={{
-                    background: "#f1f5f9",
-                    border: "1px solid #e2e8f0",
+                    background: "hsl(var(--background-muted))",
+                    border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
                     fontSize: "13px",
                     fontWeight: 500,
@@ -254,7 +254,7 @@ export default function Home() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "6px",
-                    color: "#0f172a",
+                    color: "hsl(var(--foreground))",
                     textDecoration: "none",
                   }}
                 >
@@ -265,7 +265,7 @@ export default function Home() {
               <Button
                 onClick={openRegister}
                 style={{
-                  background: "#10b981",
+                  background: "hsl(var(--success))",
                   border: "none",
                   borderRadius: "8px",
                   fontSize: "13px",
@@ -286,7 +286,7 @@ export default function Home() {
                 onClick={fetchAgents}
                 disabled={isLoading}
                 style={{
-                  background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                  background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%)",
                   border: "none",
                   borderRadius: "8px",
                   fontSize: "13px",
@@ -321,9 +321,9 @@ export default function Home() {
           }}>
             {[1, 2, 3].map((i) => (
               <div key={i} style={{
-                backgroundColor: "#fff",
+                backgroundColor: "hsl(var(--background-card))",
                 borderRadius: "12px",
-                border: "1px solid #e2e8f0",
+                border: "1px solid hsl(var(--border))",
                 padding: "24px",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
@@ -363,7 +363,7 @@ export default function Home() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: "hsl(var(--background-card))",
               borderRadius: "12px",
               width: "100%",
               maxWidth: "480px",
@@ -374,7 +374,7 @@ export default function Home() {
           >
             {/* Modal Header */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-              <h2 style={{ fontSize: "18px", fontWeight: 600, color: "#0f172a", margin: 0 }}>
+              <h2 style={{ fontSize: "18px", fontWeight: 600, color: "hsl(var(--foreground))", margin: 0 }}>
                 {modal === "register" ? "Register New Agent" : "Edit Agent"}
               </h2>
               <button
@@ -389,7 +389,7 @@ export default function Home() {
                   alignItems: "center",
                 }}
               >
-                <X size={18} color="#64748b" />
+                <X size={18} color="hsl(var(--foreground-secondary))" />
               </button>
             </div>
 
@@ -397,8 +397,8 @@ export default function Home() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {/* Agent ID */}
               <div>
-                <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "#374151", marginBottom: "4px" }}>
-                  Agent ID {modal === "register" && <span style={{ color: "#ef4444" }}>*</span>}
+                <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "hsl(var(--foreground-secondary))", marginBottom: "4px" }}>
+                  Agent ID {modal === "register" && <span style={{ color: "hsl(var(--error))" }}>*</span>}
                 </label>
                 <input
                   type="text"
@@ -409,19 +409,19 @@ export default function Home() {
                   style={{
                     width: "100%",
                     padding: "8px 12px",
-                    border: "1px solid #d1d5db",
+                    border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
                     fontSize: "14px",
                     outline: "none",
                     boxSizing: "border-box",
-                    backgroundColor: modal === "edit" ? "#f3f4f6" : "#fff",
+                    backgroundColor: modal === "edit" ? "hsl(var(--background-muted))" : "hsl(var(--background-card))",
                   }}
                 />
               </div>
 
               {/* Name */}
               <div>
-                <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "#374151", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "hsl(var(--foreground-secondary))", marginBottom: "4px" }}>
                   Display Name
                 </label>
                 <input
@@ -432,7 +432,7 @@ export default function Home() {
                   style={{
                     width: "100%",
                     padding: "8px 12px",
-                    border: "1px solid #d1d5db",
+                    border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
                     fontSize: "14px",
                     outline: "none",
@@ -444,7 +444,7 @@ export default function Home() {
               {/* Type & Status row */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "#374151", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "hsl(var(--foreground-secondary))", marginBottom: "4px" }}>
                     Type
                   </label>
                   <select
@@ -453,12 +453,12 @@ export default function Home() {
                     style={{
                       width: "100%",
                       padding: "8px 12px",
-                      border: "1px solid #d1d5db",
+                      border: "1px solid hsl(var(--border))",
                       borderRadius: "8px",
                       fontSize: "14px",
                       outline: "none",
                       boxSizing: "border-box",
-                      backgroundColor: "#fff",
+                      backgroundColor: "hsl(var(--background-card))",
                     }}
                   >
                     <option value="research">Research</option>
@@ -470,7 +470,7 @@ export default function Home() {
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "#374151", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "hsl(var(--foreground-secondary))", marginBottom: "4px" }}>
                     Status
                   </label>
                   <select
@@ -479,12 +479,12 @@ export default function Home() {
                     style={{
                       width: "100%",
                       padding: "8px 12px",
-                      border: "1px solid #d1d5db",
+                      border: "1px solid hsl(var(--border))",
                       borderRadius: "8px",
                       fontSize: "14px",
                       outline: "none",
                       boxSizing: "border-box",
-                      backgroundColor: "#fff",
+                      backgroundColor: "hsl(var(--background-card))",
                     }}
                   >
                     <option value="online">Online</option>
@@ -497,7 +497,7 @@ export default function Home() {
               {/* Skills */}
               <div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                  <label style={{ fontSize: "13px", fontWeight: 500, color: "#374151" }}>
+                  <label style={{ fontSize: "13px", fontWeight: 500, color: "hsl(var(--foreground-secondary))" }}>
                     Skills
                   </label>
                   <button
@@ -506,7 +506,7 @@ export default function Home() {
                     style={{
                       background: "none",
                       border: "none",
-                      color: "#6366f1",
+                      color: "hsl(var(--primary))",
                       fontSize: "12px",
                       fontWeight: 500,
                       cursor: "pointer",
@@ -527,7 +527,7 @@ export default function Home() {
                         style={{
                           flex: 1,
                           padding: "8px 12px",
-                          border: "1px solid #d1d5db",
+                          border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
                           fontSize: "14px",
                           outline: "none",
@@ -546,7 +546,7 @@ export default function Home() {
                             alignItems: "center",
                           }}
                         >
-                          <X size={16} color="#94a3b8" />
+                          <X size={16} color="hsl(var(--foreground-muted))" />
                         </button>
                       )}
                     </div>
@@ -558,11 +558,11 @@ export default function Home() {
               {formError && (
                 <div style={{
                   padding: "10px 12px",
-                  backgroundColor: "#fef2f2",
-                  border: "1px solid #fecaca",
+                  backgroundColor: "hsl(var(--error-bg))",
+                  border: "1px solid hsl(var(--error))",
                   borderRadius: "8px",
                   fontSize: "13px",
-                  color: "#dc2626",
+                  color: "hsl(var(--error-fg))",
                 }}>
                   {formError}
                 </div>
@@ -574,12 +574,12 @@ export default function Home() {
                   onClick={closeModal}
                   style={{
                     padding: "8px 16px",
-                    border: "1px solid #d1d5db",
+                    border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
-                    backgroundColor: "#fff",
+                    backgroundColor: "hsl(var(--background-card))",
                     fontSize: "13px",
                     fontWeight: 500,
-                    color: "#374151",
+                    color: "hsl(var(--foreground-secondary))",
                     cursor: "pointer",
                   }}
                 >
@@ -591,7 +591,7 @@ export default function Home() {
                     padding: "8px 20px",
                     border: "none",
                     borderRadius: "8px",
-                    background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%)",
                     fontSize: "13px",
                     fontWeight: 500,
                     color: "#fff",

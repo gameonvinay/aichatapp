@@ -69,7 +69,7 @@ export default function AgentTopology({ agents, connections }: AgentTopologyProp
             <div style={{ textAlign: "center" }}>
               <div style={{ fontWeight: 600 }}>{agent.name || agent.id}</div>
               {agent.type && (
-                <div style={{ fontSize: "12px", color: "#64748b" }}>{agent.type}</div>
+                <div style={{ fontSize: "12px", color: "hsl(var(--foreground-secondary))" }}>{agent.type}</div>
               )}
             </div>
           ),
@@ -82,10 +82,10 @@ export default function AgentTopology({ agents, connections }: AgentTopologyProp
         },
         style: {
           minWidth: 180,
-          border: "1px solid #e2e8f0",
+          border: "1px solid hsl(var(--border))",
           borderRadius: 8,
-          background: "#ffffff",
-          color: "#0f172a",
+          background: "hsl(var(--background-card))",
+          color: "hsl(var(--foreground))",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
         },
       }
@@ -100,7 +100,7 @@ export default function AgentTopology({ agents, connections }: AgentTopologyProp
       source: c.agentId,
       target: c.targetAgentId,
       animated: true,
-      style: { stroke: "#6366f1" },
+      style: { stroke: "hsl(var(--primary))" },
     }))
   }, [connections])
 
@@ -114,20 +114,20 @@ export default function AgentTopology({ agents, connections }: AgentTopologyProp
 
   return (
     <div style={{
-      backgroundColor: "#ffffff",
+      backgroundColor: "hsl(var(--background-card))",
       borderRadius: "12px",
-      border: "1px solid #e2e8f0",
+      border: "1px solid hsl(var(--border))",
       overflow: "hidden",
     }}>
-      <div style={{ padding: "20px", borderBottom: "1px solid #f1f5f9" }}>
+      <div style={{ padding: "20px", borderBottom: "1px solid hsl(var(--border-light))" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a", margin: 0 }}>
+          <h2 style={{ fontSize: "16px", fontWeight: 600, color: "hsl(var(--foreground))", margin: 0 }}>
             Agent Topology
           </h2>
           <div style={{ display: "flex", gap: "8px" }}>
             <span style={{
-              backgroundColor: "#f1f5f9",
-              color: "#475569",
+              backgroundColor: "hsl(var(--background-muted))",
+              color: "hsl(var(--foreground-secondary))",
               fontSize: "12px",
               fontWeight: 500,
               padding: "2px 10px",
@@ -136,8 +136,8 @@ export default function AgentTopology({ agents, connections }: AgentTopologyProp
               {nodeCount} agents
             </span>
             <span style={{
-              backgroundColor: "#f1f5f9",
-              color: "#475569",
+              backgroundColor: "hsl(var(--background-muted))",
+              color: "hsl(var(--foreground-secondary))",
               fontSize: "12px",
               fontWeight: 500,
               padding: "2px 10px",
@@ -163,10 +163,10 @@ export default function AgentTopology({ agents, connections }: AgentTopologyProp
             nodeColor={(node) => {
               const status = (node.data as any)?.status || "online"
               switch (status.toLowerCase()) {
-                case "online": return "#22c55e"
-                case "offline": return "#94a3b8"
-                case "busy": return "#eab308"
-                default: return "#22c55e"
+                case "online": return "hsl(var(--status-online))"
+                case "offline": return "hsl(var(--foreground-muted))"
+                case "busy": return "hsl(var(--status-busy))"
+                default: return "hsl(var(--status-online))"
               }
             }}
           />

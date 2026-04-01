@@ -239,7 +239,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh", backgroundColor: "#f8fafc" }}>
+    <div style={{ display: "flex", height: "100vh", backgroundColor: "hsl(var(--background-page))" }}>
       {/* Sidebar */}
       {sidebarOpen && (
         <ConversationSidebar
@@ -253,8 +253,8 @@ export default function ChatPage() {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* Header */}
         <header style={{
-          backgroundColor: "#ffffff",
-          borderBottom: "1px solid #e2e8f0",
+          backgroundColor: "hsl(var(--background-card))",
+          borderBottom: "1px solid hsl(var(--border))",
           padding: "0 24px",
         }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
@@ -278,13 +278,13 @@ export default function ChatPage() {
                     flexShrink: 0,
                   }}
                 >
-                  {sidebarOpen ? <X size={20} color="#64748b" /> : <Menu size={20} color="#64748b" />}
+                  {sidebarOpen ? <X size={20} color="hsl(var(--foreground-secondary))" /> : <Menu size={20} color="hsl(var(--foreground-secondary))" />}
                 </button>
                 <div style={{
                   width: "36px",
                   height: "36px",
                   borderRadius: "10px",
-                  background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                  background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -293,10 +293,10 @@ export default function ChatPage() {
                   <Bot size={20} color="#fff" />
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <h1 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a", margin: 0 }}>
+                  <h1 style={{ fontSize: "16px", fontWeight: 600, color: "hsl(var(--foreground))", margin: 0 }}>
                     AI Chat
                   </h1>
-                  <p style={{ fontSize: "12px", color: isConnected === true ? "#10b981" : "#ef4444", margin: "2px 0 0" }}>
+                  <p style={{ fontSize: "12px", color: isConnected === true ? "hsl(var(--success))" : "hsl(var(--error))", margin: "2px 0 0" }}>
                     {isConnected === true ? "Connected to LM Studio" : "Not connected"}
                   </p>
                 </div>
@@ -311,11 +311,11 @@ export default function ChatPage() {
                         alignItems: "center",
                         gap: "6px",
                         padding: "6px 12px",
-                        background: "#f8fafc",
-                        border: "1px solid #e2e8f0",
+                        background: "hsl(var(--background-page))",
+                        border: "1px solid hsl(var(--border))",
                         borderRadius: "8px",
                         fontSize: "12px",
-                        color: "#475569",
+                        color: "hsl(var(--foreground-secondary))",
                         cursor: "pointer",
                       }}
                     >
@@ -328,8 +328,8 @@ export default function ChatPage() {
                         right: 0,
                         top: "100%",
                         marginTop: "4px",
-                        background: "#ffffff",
-                        border: "1px solid #e2e8f0",
+                        background: "hsl(var(--background-card))",
+                        border: "1px solid hsl(var(--border))",
                         borderRadius: "8px",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                         zIndex: 50,
@@ -343,11 +343,11 @@ export default function ChatPage() {
                               display: "block",
                               width: "100%",
                               padding: "8px 12px",
-                              background: selectedModel === model ? "#f1f5f9" : "transparent",
+                              background: selectedModel === model ? "hsl(var(--background-muted))" : "transparent",
                               border: "none",
-                              borderBottom: "1px solid #f1f5f9",
+                              borderBottom: "1px solid hsl(var(--background-muted))",
                               fontSize: "12px",
-                              color: "#334155",
+                              color: "hsl(var(--foreground-muted))",
                               textAlign: "left",
                               cursor: "pointer",
                             }}
@@ -377,7 +377,7 @@ export default function ChatPage() {
             <div style={{
               textAlign: "center",
               paddingTop: "80px",
-              color: "#64748b",
+              color: "hsl(var(--foreground-secondary))",
             }}>
               <Bot size={48} style={{ marginBottom: "16px", opacity: 0.5 }} />
               <p style={{ fontSize: "16px" }}>Start a conversation</p>
@@ -401,10 +401,10 @@ export default function ChatPage() {
                       padding: "12px 16px",
                       borderRadius: "12px",
                       background: msg.role === "user"
-                        ? "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)"
-                        : "#ffffff",
-                      color: msg.role === "user" ? "#ffffff" : "#0f172a",
-                      border: msg.role === "assistant" ? "1px solid #e2e8f0" : "none",
+                        ? "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%)"
+                        : "hsl(var(--background-card))",
+                      color: msg.role === "user" ? "#fff" : "hsl(var(--foreground))",
+                      border: msg.role === "assistant" ? "1px solid hsl(var(--border))" : "none",
                       fontSize: "14px",
                       lineHeight: "1.5",
                       whiteSpace: "pre-wrap",
@@ -428,8 +428,8 @@ export default function ChatPage() {
 
         {/* Input */}
         <footer style={{
-          backgroundColor: "#ffffff",
-          borderTop: "1px solid #e2e8f0",
+          backgroundColor: "hsl(var(--background-card))",
+          borderTop: "1px solid hsl(var(--border))",
           padding: "16px 24px",
         }}>
           <div style={{
@@ -449,7 +449,7 @@ export default function ChatPage() {
               style={{
                 flex: 1,
                 padding: "12px 16px",
-                border: "1px solid #e2e8f0",
+                border: "1px solid hsl(var(--border))",
                 borderRadius: "12px",
                 fontSize: "14px",
                 outline: "none",
@@ -463,7 +463,7 @@ export default function ChatPage() {
               onClick={sendMessage}
               disabled={!input.trim() || isStreaming}
               style={{
-                background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%)",
                 border: "none",
                 borderRadius: "12px",
                 width: "48px",
@@ -505,7 +505,7 @@ function ReasoningAccordion({ content }: { content: string }) {
       marginBottom: "8px",
       borderRadius: "8px",
       overflow: "hidden",
-      border: "1px solid #e2e8f0",
+      border: "1px solid hsl(var(--border))",
       width: "100%",
     }}>
       <button
@@ -516,11 +516,11 @@ function ReasoningAccordion({ content }: { content: string }) {
           gap: "8px",
           width: "100%",
           padding: "8px 12px",
-          background: "#f8fafc",
+          background: "hsl(var(--background-page))",
           border: "none",
           cursor: "pointer",
           fontSize: "13px",
-          color: "#64748b",
+          color: "hsl(var(--foreground-secondary))",
           textAlign: "left",
         }}
       >
@@ -531,10 +531,10 @@ function ReasoningAccordion({ content }: { content: string }) {
       {isOpen && (
         <div style={{
           padding: "12px",
-          background: "#f8fafc",
-          borderTop: "1px solid #e2e8f0",
+          background: "hsl(var(--background-page))",
+          borderTop: "1px solid hsl(var(--border))",
           fontSize: "13px",
-          color: "#475569",
+          color: "hsl(var(--foreground-secondary))",
           whiteSpace: "pre-wrap",
           wordBreak: "break-word",
         }}>
@@ -551,13 +551,13 @@ function ToolCallDisplay({ calls }: { calls: ToolCall[] }) {
       marginBottom: "8px",
       borderRadius: "8px",
       overflow: "hidden",
-      border: "1px solid #e2e8f0",
+      border: "1px solid hsl(var(--border))",
     }}>
       {calls.map((call, i) => (
         <div key={i} style={{
           padding: "8px 12px",
-          background: "#f8fafc",
-          borderBottom: i < calls.length - 1 ? "1px solid #e2e8f0" : "none",
+          background: "hsl(var(--background-page))",
+          borderBottom: i < calls.length - 1 ? "1px solid hsl(var(--border))" : "none",
         }}>
           <div style={{
             display: "flex",
@@ -565,11 +565,11 @@ function ToolCallDisplay({ calls }: { calls: ToolCall[] }) {
             gap: "8px",
             marginBottom: "6px",
           }}>
-            <Wrench size={14} color="#6366f1" />
+            <Wrench size={14} color="hsl(var(--primary))" />
             <span style={{
               fontSize: "13px",
               fontWeight: 600,
-              color: "#334155",
+              color: "hsl(var(--foreground-muted))",
             }}>
               {call.name.replace(/execute_skill_/g, '').replace(/_/g, '.')}
             </span>
@@ -578,15 +578,15 @@ function ToolCallDisplay({ calls }: { calls: ToolCall[] }) {
               fontSize: "11px",
               padding: "2px 8px",
               borderRadius: "12px",
-              background: call.status === 'completed' ? '#dcfce7' : call.status === 'error' ? '#fee2e2' : '#fef3c7',
-              color: call.status === 'completed' ? '#166534' : call.status === 'error' ? '#991b1b' : '#92400e',
+              background: call.status === 'completed' ? 'hsl(var(--success-bg))' : call.status === 'error' ? 'hsl(var(--error-bg))' : 'hsl(var(--warning-bg))',
+              color: call.status === 'completed' ? 'hsl(var(--success-fg))' : call.status === 'error' ? 'hsl(var(--error-fg))' : 'hsl(var(--warning-fg))',
             }}>
               {call.status}
             </span>
           </div>
           <div style={{
             fontSize: "12px",
-            color: "#64748b",
+            color: "hsl(var(--foreground-secondary))",
             marginBottom: "4px",
           }}>
             <span style={{ fontWeight: 500 }}>Input:</span> {call.input}
@@ -594,13 +594,13 @@ function ToolCallDisplay({ calls }: { calls: ToolCall[] }) {
           {call.output && (
             <div style={{
               fontSize: "12px",
-              color: "#64748b",
+              color: "hsl(var(--foreground-secondary))",
               maxHeight: "100px",
               overflow: "auto",
               padding: "6px 8px",
-              background: "#ffffff",
+              background: "hsl(var(--background-card))",
               borderRadius: "4px",
-              border: "1px solid #f1f5f9",
+              border: "1px solid hsl(var(--background-muted))",
             }}>
               <span style={{ fontWeight: 500 }}>Output:</span>{" "}
               {typeof call.output === 'object' ? JSON.stringify(call.output, null, 2).substring(0, 300) : String(call.output)}
