@@ -1,8 +1,8 @@
 import "@/globals.css"
 
 export const metadata = {
-  title: "Deep Agents Dashboard",
-  description: "Real-time agent monitoring and management dashboard",
+  title: "AI Agents — Command Center",
+  description: "Multi-agent AI orchestration with real-time streaming and tool execution",
 }
 
 export default function RootLayout({
