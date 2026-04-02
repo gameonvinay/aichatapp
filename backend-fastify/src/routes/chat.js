@@ -10,6 +10,14 @@ module.exports = async function (fastify, options) {
       return reply.code(400).send({ error: 'Messages array is required' });
     }
 
+    const health = await llmService.checkHealth();
+    if (!health.connected) {
+      return reply.code(503).send({
+        error: 'LM Studio is not reachable',
+        details: health.error || 'Cannot connect to LLM endpoint',
+      });
+    }
+
     let activeConversationId = conversationId;
 
     if (!activeConversationId) {
