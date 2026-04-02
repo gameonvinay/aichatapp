@@ -3,9 +3,14 @@ import { NextRequest, NextResponse } from 'next/server'
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://host.docker.internal:8080'
 
 export async function GET() {
-  const res = await fetch(`${BACKEND_URL}/api/conversations`)
-  const data = await res.json()
-  return NextResponse.json(data)
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/conversations`)
+    if (!res.ok) return NextResponse.json({ conversations: [] })
+    const data = await res.json()
+    return NextResponse.json(data)
+  } catch {
+    return NextResponse.json({ conversations: [] })
+  }
 }
 
 export async function POST(request: NextRequest) {
