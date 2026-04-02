@@ -26,7 +26,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - POSTGRES_URL=postgresql://postgres:postgres@postgresql/paieval?sslmode=disable
       - KAFKA_BROKERS=kafka:9092
-      - LM_STUDIO_URL=http://host.docker.internal:1234
+      - LM_STUDIO_URL=${LM_STUDIO_URL:-http://host.docker.internal:1234}
     depends_on:
       redis:
         condition: service_started
